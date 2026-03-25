@@ -31,7 +31,7 @@ test: $(LIB_NAME)
 	@echo "# - - - - - - - - - - - - - - - - - #"
 	@echo "                                     "
 
-	$(GCC) $(GCC_FLAGS) -L. -lasm -o $(NAME) main.c
+	$(GCC) $(GCC_FLAGS) main.c -L. -lasm -o $(NAME)
 	
 	@echo "./$(NAME)"
 	@echo "                                     "
