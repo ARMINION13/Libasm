@@ -8,18 +8,20 @@ AR_FLAGS = rcs
 GCC = gcc
 GCC_FLAGS = -Wall -Wextra -Werror
 
-SRCS = ft_strlen.s
+SRCS = ft_strlen.s ft_strcpy.s
 OBJS = $(SRCS:.s=.o)
 
 
-all: $(SRCS)
+%.o: %.s
+	$(NA) $(NA_FLAGS) $< -o $@
+
+all: $(OBJS)
 	@echo "                                     "
 	@echo "# - - - - - - - - - - - - - - - - - #"
 	@echo "# - - - - - - - A L L - - - - - - - #"
 	@echo "# - - - - - - - - - - - - - - - - - #"
 	@echo "                                     "
-
-	$(NA) $(NA_FLAGS) $(SRCS)
+	
 	$(AR) $(AR_FLAGS) $(LIB_NAME) $(OBJS)
 	ranlib $(LIB_NAME)
 
