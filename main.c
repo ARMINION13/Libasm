@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <errno.h> //contiene la variable global errno para manejo de errores
 
 extern size_t		ft_strlen(const char *str);
 extern char         *ft_strcpy(char *dst, const char *src);
@@ -39,25 +40,35 @@ int main ()
     printf("%s = %i(Compare Equal)\n", str, strcmp(str, "Hola que tal estais\0"));
     printf("%s = %i(Compare Equal)\n", str, ft_strcmp(str, "Hola que tal estais\0"));
 
-    printf("(Syscall_Write) = %lu\n", write(1, "Hola que tal estais\0", ft_strlen(str) + 1));
-    printf("(Syscall_Write) = %lu\n", ft_write(1, "Hola que tal estais\0", ft_strlen(str) + 1));
+    printf("(Syscall_Write) = %li\n", write(1, "Hola que tal estais\0", ft_strlen(str) + 1));
+    printf("(Syscall_Write) = %li\n", ft_write(1, "Hola que tal estais\0", ft_strlen(str) + 1));
 
-    printf("(Syscall_Write 0 Length) = %lu\n", write(1, "Hola que tal estais\0", 0));
-    printf("(Syscall_Write 0 Length) = %lu\n", ft_write(1, "Hola que tal estais\0", 0));
+    printf("(Syscall_Write 0 Length) = %li\n", write(1, "Hola que tal estais\0", 0));
+    printf("(Syscall_Write 0 Length) = %li\n", ft_write(1, "Hola que tal estais\0", 0));
 
-    printf("(Syscall_Write NULL string) = %lu\n", write(1, "", ft_strlen(str) + 1));
-    printf("(Syscall_Write NULL string) = %lu\n", ft_write(1, "", ft_strlen(str) + 1));
+    printf("(Syscall_Write NULL string) = %li\n", write(1, "", ft_strlen(str) + 1));
+    printf("(Syscall_Write NULL string) = %li\n", ft_write(1, "", ft_strlen(str) + 1));
+    
+    printf("(Syscall_Write FD error) = %li\n", write(-1, "Hola que tal estais\0", ft_strlen(str) + 1));
+    printf("Error detectado: %d\n", errno);
+    printf("(Syscall_Write FD error) = %li\n", ft_write(-1, "Hola que tal estais\0", ft_strlen(str) + 1));
+    printf("Error detectado: %d\n", errno);
 
-    int             fd = open("./TestFile.txt", O_RDONLY);
+    int             fd1 = open("TestFile.txt", O_RDONLY);
+    int             fd2 = open("TestFile.txt", O_RDONLY);
 
-    printf("%s = %lu --> %s(Syscall_Read)\n", str, read(fd, str, 20), str);
-    str = "Hola que tal estais\0";
-    printf("%s = %lu --> %s(Syscall_Read)\n", str, ft_read(fd, str, 20), str);
-    str = "Hola que tal estais\0";
-    printf("%s = %lu --> %s(Syscall_Read 0 Length)\n", str, read(fd, str, 0), str);
-    str = "Hola que tal estais\0";
-    printf("%s = %lu --> %s(Syscall_Read 0 Length)\n", str, ft_read(fd, str, 0), str);
-    str = "Hola que tal estais\0";
+    printf("%li = %s(Syscall_Read)\n", read(fd1, dst, 20), dst);
+    printf("%li = %s(Syscall_Read)\n", read(fd2, dst, 20), dst);
+    ft_strcpy(dst, str);
+
+    printf("%li = %s(Syscall_Read 0 Length)\n", read(fd1, dst, 20), dst);
+    printf("%li = %s(Syscall_Read 0 Length)\n", read(fd2, dst, 20), dst);
+
+    printf("%li = %s(Syscall_Read)\n", read(-1, dst, 20), dst);
+    printf("Error detectado: %d\n", errno);
+    printf("%li = %s(Syscall_Read)\n", read(-1, dst, 20), dst);
+    printf("Error detectado: %d\n", errno);
+
 
 
     return (0);

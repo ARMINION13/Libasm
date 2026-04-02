@@ -1,11 +1,25 @@
+extern __errno_location
 section .text
     global ft_write
 
 ft_write:
-    push rbp        ;Guardo el base pointer en el stack
-    mov rbp, rsp    ;Igualo el base pointer al stack pointer
-    xor rax, rax    ;Inicializo rax a 0
-    mov rax, 1      ;En rax se almacena el id del tipo de interrupcion(syscall) que queremos usar en este caso write = 1
-    syscall         ;Llamamos al syscall, como el syscall usa los mismos estandares de registros para los argumentos no tenemos que tocar nada (rdi, rsi, ...)
-    pop rbp         ;Devuelvo el base pointer a su posicion inicial
-    ret             ;termina el programa y devuelve los registros de rax y eax
+    push rbp                            ;Guardo el base pointer en el stack
+    mov rbp, rsp                        ;Igualo el base pointer al stack pointer
+    xor rax, rax                        ;Inicializo rax a 0
+    mov rax, 1                          ;En rax se almacena el id del tipo de interrupcion(syscall) que queremos usar en este caso write = 1
+    syscall                             ;Llamamos al syscall, como el syscall usa los mismos estandares de registros para los argumentos no tenemos que tocar nada (rdi, rsi, ...)
+
+    cmp rax, 0                          ;Rax ahora contiene el retorno de syscall, asi que compruebo si es menor que cero, lo que significaria error
+    jl send_error
+
+    pop rbp                             ;Devuelvo el base pointer a su posicion inicial
+    ret                                 ;termina el programa y devuelve los registros de rax y eax
+
+send_error:
+    neg rax                             ;Lo paso a positivo
+    mov rbx, rax                        ;Lo guardo en otro registro temporalmente porque necesito rax
+    call __errno_location WRT ..plt     ;Llamo a la funcion __errno_location que me devolvera en rax la direccion de la variable errno
+    mov [rax], rbx                      ;Ahora accedo al contenido de errno y guardo dentro el codigo de error parseado
+    mov rax, -1                         ;Por ultimo sobrescribimos rax con lo que la funcion write devuelve en caso de error
+    pop rbp
+    ret
