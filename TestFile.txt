@@ -1,0 +1,2 @@
+Aqui voy a dejar un poco de texto para testear mi funcion ft_read
+Y aqui hago un salto de linea por si acaso
