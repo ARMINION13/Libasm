@@ -21,9 +21,9 @@ ft_read:
 
 send_error:
     neg rax                             ;Lo paso a positivo
-    mov rcx, rax                  ;Lo guardo en otro registro temporalmente porque necesito rax
+    mov rcx, rax                        ;Lo guardo en otro registro temporalmente porque necesito rax
     call __errno_location WRT ..plt     ;Llamo a la funcion __errno_location que me devolvera en rax la direccion de la variable errno
-    mov [rax], rcx                ;Ahora accedo al contenido de errno y guardo dentro el codigo de error parseado
+    mov [rax], rcx                      ;Ahora accedo al contenido de errno y guardo dentro el codigo de error parseado
     mov rax, -1                         ;Por ultimo sobrescribimos rax con lo que la funcion read devuelve en caso de error
 
     mov rsp, rbp
