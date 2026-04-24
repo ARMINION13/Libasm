@@ -30,7 +30,7 @@ ft_strdup:
 
 no_mem_error:
     call __errno_location WRT ..plt     ;Llamo a la funcion __errno_location que me devolvera en rax la direccion de la variable errno
-    mov [rax], 12                       ;Ahora accedo al contenido de errno y guardo dentro el codigo de error ENOMEM
+    mov qword [rax], 12                 ;Ahora accedo al contenido de errno y guardo dentro el codigo de error ENOMEM
     xor rax, rax                        ;Lo vuelvo a inicializar a 0 porque el puntero es NULL
     
     leave
